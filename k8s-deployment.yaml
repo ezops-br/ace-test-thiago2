@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: search-app
+  template:
+    metadata:
+      labels:
+        app: search-app
+    spec:
+      containers:
+      - name: search-app
+        image: 975635808270.dkr.ecr.us-east-1.amazonaws.com/search-app:latest
+        ports:
+        - containerPort: 80
