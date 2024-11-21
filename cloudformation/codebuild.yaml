@@ -1,0 +1,25 @@
+{
+    "Version": "2.0",
+    "Resources": {
+        "BuildProject": {
+            "Type": "AWS::CodeBuild::Project",
+            "Properties": {
+                "Name": "search-app-build",
+                "ServiceRole": "${CODEBUILD_ROLE_ARN}",
+                "Artifacts": {
+                    "Type": "CODEPIPELINE"
+                },
+                "Environment": {
+                    "Type": "LINUX_CONTAINER",
+                    "ComputeType": "BUILD_GENERAL1_SMALL",
+                    "Image": "aws/codebuild/amazonlinux2-x86_64-standard:3.0",
+                    "PrivilegedMode": true
+                },
+                "Source": {
+                    "Type": "CODEPIPELINE",
+                    "BuildSpec": "buildspec.yml"
+                }
+            }
+        }
+    }
+}
