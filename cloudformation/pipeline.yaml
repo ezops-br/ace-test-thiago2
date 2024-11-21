@@ -1,0 +1,69 @@
+{
+    "Version": "2.0",
+    "Resources": {
+        "Pipeline": {
+            "Type": "AWS::CodePipeline::Pipeline",
+            "Properties": {
+                "Name": "search-app-pipeline",
+                "RoleArn": "${PIPELINE_ROLE_ARN}",
+                "ArtifactStore": {
+                    "Type": "S3",
+                    "Location": "${ARTIFACT_BUCKET}"
+                },
+                "Stages": [
+                    {
+                        "Name": "Source",
+                        "Actions": [
+                            {
+                                "Name": "Source",
+                                "ActionTypeId": {
+                                    "Category": "Source",
+                                    "Owner": "AWS",
+                                    "Provider": "CodeStarSourceConnection",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "ConnectionArn": "${GITHUB_CONNECTION_ARN}",
+                                    "FullRepositoryId": "ezops-br/ace-test-thiago2",
+                                    "BranchName": "main"
+                                },
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "SourceCode"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Name": "Build",
+                        "Actions": [
+                            {
+                                "Name": "BuildAndPush",
+                                "ActionTypeId": {
+                                    "Category": "Build",
+                                    "Owner": "AWS",
+                                    "Provider": "CodeBuild",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "ProjectName": "search-app-build"
+                                },
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "SourceCode"
+                                    }
+                                ],
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "BuildOutput"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
